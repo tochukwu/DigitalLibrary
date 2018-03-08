@@ -1,0 +1,187 @@
+﻿
+@{
+    ViewBag.Title = "Digital_Library";
+}
+
+<div class="jumbotron">
+    <strong><h1><font face="verdana" color="orange">Semantic Web  System</font></h1></strong>
+   <i><p class="lead"> book library system  powered by Semnatic Web </p></i>
+    <!-- <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>-->
+   </div>
+<br>
+<div class="row">
+    <div class="col-md-4">
+      <strong><h4>Title</h4></strong>
+        <input type="text" name="title" id="btitle" autofocus>
+        <!-- <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>-->
+    </div>
+
+    <div class="col-md-4">
+        <strong><h4>ISBN:</h4></strong>
+    <input type="text" name="isbn" maxlength="13" id="isbn"  >
+    <!--<p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>-->
+</div>
+    
+    <div class="col-md-4">
+        <strong><h4>Author:</h4></strong>
+        <input type="text" name="author" id="author" >
+       <!--<p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>-->
+       <!--<p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>-->
+    </div> 
+
+</div>
+
+ <br><br>
+    <div>
+      <input type="button" name="Submit" id="seek" value="seek"> 
+  
+
+    </div>
+<table id="results"></table>
+
+
+   
+  <!-- jquery --> 
+
+<input type="hidden" value="&#64;en" id="stringUrl" />
+<script src="http://ajax.googleapis.com/…/li…/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript">
+    
+    
+    
+    seek.onclick = function(){
+        var ui = document.getElementById("btitle").value;
+        var ibn = document.getElementById("isbn").value;
+        var au = document.getElementById("author").value;
+        var url = "http://dbpedia.org/sparql";
+        var stringUrl = $('#stringUrl').val();
+
+        if (btitle!= null) {
+            var query = ["PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
+                "PREFIX type: <http://dbpedia.org/class/yago/>",
+               "PREFIX prpty: <http://dbpedia.org/property/>",
+               " PREFIX ppl: <http://dbpedia.org/resource/>",
+                "PREFIX owl: <http://dbpedia.org/resource/classes#>",
+
+                "SELECT ?ISDN ?Title ?Author ?Description",  
+            "{",
+                     " ?Book prpty:author ?Book.",
+                      "?Book rdfs:label ?Title.",
+                      "?Book prpty:author ?Au.",
+                  " ?Au rdfs:label?Author.", 
+                " ?Book dbo:isbn ?ISDN.",
+                " ?Book dbo:abstract ?Description",
+
+   
+                 "FILTER (lang(?Title) ='en').",
+            "FILTER(?Title='"+ibn+""+stringUrl+").",
+            
+            "}",
+     "LIMIT 30",
+            ].join(" ");
+        }
+
+        if (isbn != null) {
+
+            var query = [ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
+                "PREFIX type: <http://dbpedia.org/class/yago/>",
+               "PREFIX prpty: <http://dbpedia.org/property/>",
+               " PREFIX ppl: <http://dbpedia.org/resource/>",
+                "PREFIX owl: <http://dbpedia.org/resource/classes#>",
+
+                "SELECT ?ISDN ?Title ?Author ?Description",  
+            "{",
+                   " ?Book dbo:isbn ?ISBN.",
+                 "?Book prpty:title ?Title.",
+                  "?Book prpty:author ?Au.",
+                  "?Au rdfs:label ?Author.",
+                  "?Book dbo:abstract ?Description",
+
+   
+                 "FILTER (lang(?Title) ='en').",
+                 "FILTER (lang(?Author) ='en').",
+                 "FILTER(?ISBN='" + ibn + "" + stringUrl + ").",
+"}",
+     "LIMIT 30",
+            ].join(" ");
+        }
+        if (author != null)
+        {
+            var query = ["PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
+            "PREFIX type: <http://dbpedia.org/class/yago/>",
+            "PREFIX prpty: <http://dbpedia.org/property/>",
+           " PREFIX ppl: <http://dbpedia.org/resource/>",
+            "PREFIX dbr: <http://dbpedia.org/resource/> ",
+           " PREFIX dbo: <http://dbpedia.org/ontology/>",
+            "SELECT ?Author  ?Also_wrote",  
+  
+"WHERE{",    
+ "?author dbp:author ?see.",
+     "?see rdfs:label?Also_wrote.",
+     "?author dbp:name ?Author.'",
+     
+      "FILTER (lang(?Author) ='en').",
+"FILTER(?Author='" + au + "" + stringUrl + ").",
+"}",  
+
+             "LIMIT 30",
+
+         ].join(" ");
+
+        
+        }
+
+
+        var queryUrl = url + "?query=" + encodeURIComponent(query) + "&format=json";
+
+        document.getElementById("query1").innerHTML = "SPARQL Query " + query;
+
+
+        
+
+        $.ajax({
+            dataType: "jsonp",
+            url: queryUrl,
+            success: function (data) {
+              
+                document.getElementById("results").innerHTML = "";
+                var table = $("#results");
+
+                var headerVars = data.head.vars;
+
+                var trHeaders = getTableHeaders(headerVars);
+                table.append(trHeaders);
+                                       
+                var bindings = data.results.bindings;
+                for (rowIdx in bindings) {
+                    table.append(getTableRow(headerVars, bindings[rowIdx]));
+                }
+            }
+        });
+
+        function getTableHeaders(headerVars) {
+            var trHeaders = $("<tr></tr>");
+            for (var i in headerVars) {
+                trHeaders.append($("<th>" + headerVars[i] + "</th>"));
+            }
+            return trHeaders;
+        }
+
+        function getTableRow(headerVars, rowData) {
+            var tr = $("<tr></tr>");
+
+            for (var i in headerVars) {
+                tr.append(getTableCell(headerVars[i], rowData));
+            }
+
+            return tr;
+        }
+
+        function getTableCell(fieldName, rowData) {
+            var td = $("<td></td>");
+            var fieldData = rowData[fieldName];
+            td.html(fieldData["value"]);
+            return td;
+        }
+    }
+</script> 

@@ -1,0 +1,6 @@
+﻿{
+  "head": {
+    "vars": [ "Author", "Also_wrote" ]
+  }, //the comma there has no issues
+  "results": { "bindings": [ {} ] }
+}

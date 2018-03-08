@@ -1,0 +1,57 @@
+﻿@{
+   // Layout = null;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Digital_Library";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+
+    <div class="row">
+        <div class="col-md-4">
+            <strong> <h4>Title</h4></strong>
+            <input type="text" name="title" id="btitle" autofocus>
+            <!-- <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>-->
+        </div>
+
+        <div class="col-md-4">
+            <strong><h4>ISDN:</h4></strong>
+            <input type="text" name="isdn" id="isdn">
+            <!--<p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>-->
+        </div>
+
+        <div class="col-md-4">
+            <strong><h4>Author:</h4></strong>
+            <input type="text" name="author" id="author">
+            <!--<p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>-->
+            <!-- <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>-->
+        </div>
+
+
+
+
+    </div>
+    <br> <br>
+    <div class="row">
+        <div class="col-md-4">
+            <strong><h4>Genere:</h4></strong>
+            <input type="text" name="genere" id="genere">
+            <!-- <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>-->
+        </div>
+        <br><br><br>
+        <div>
+            <input type="button" name="submit" value="Look up">
+        </div>
+        <br><br>
+
+    </div>
+</body>
+</html>
